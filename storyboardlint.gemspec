@@ -12,13 +12,21 @@ Gem::Specification.new do |s|
   s.date = "2014-02-19"
   s.description = "It's a pain to to keep identifier strings in your UIStoryboard and it your source code in sync. This tool helps you to do just that."
   s.email = "johannes@springenwerk.com"
+  s.executables = ["storyboardlint"]
   s.extra_rdoc_files = [
     "LICENSE",
     "README.md"
   ]
   s.files = [
+    "Gemfile",
+    "Gemfile.lock",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "Rakefile",
+    "VERSION",
+    "bin/storyboardlint",
+    "lib/storyboardlint.rb",
+    "storyboardlint.gemspec"
   ]
   s.homepage = "https://github.com/jfahrenkrug/StoryboardLint"
   s.licenses = ["MIT"]
