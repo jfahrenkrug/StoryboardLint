@@ -1,3 +1,4 @@
+# encoding: UTF-8
 # Have fun. Use at your own risk.
 # Copyright (c) 2014 Johannes Fahrenkrug
 
@@ -86,7 +87,7 @@ module StoryboardLint
         @reuse_ids ||= []
 
         source_files.each do |source_file|
-          File.readlines(source_file).each_with_index do |line, idx|
+          File.readlines(source_file, :encoding => 'UTF-8').each_with_index do |line, idx|
             # class names
             line.scan(@matcher.class_regex).each do |match|
               @class_names << {:file => source_file, :line => idx + 1, :class_name => match[0]}
@@ -278,7 +279,7 @@ module StoryboardLint
 
         # Another typical switch to print the version.
         opts.on_tail("--version", "Show version") do
-          puts "StoryboardLint v0.1.1"
+          puts "StoryboardLint v0.1.2"
           exit
         end
       end
