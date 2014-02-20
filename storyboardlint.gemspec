@@ -5,12 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = "storyboardlint"
-  s.version = "0.1.0"
+  s.version = "0.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Johannes Fahrenkrug"]
-  s.date = "2014-02-19"
-  s.description = "It's a pain to to keep identifier strings in your UIStoryboard and it your source code in sync. This tool helps you to do just that."
+  s.date = "2014-02-20"
+  s.description = "It's a pain to to keep identifier strings in your UIStoryboard and in your source code in sync. This tool helps you to do just that."
   s.email = "johannes@springenwerk.com"
   s.executables = ["storyboardlint"]
   s.extra_rdoc_files = [
