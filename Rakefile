@@ -16,7 +16,7 @@ Jeweler::Tasks.new do |gem|
   gem.homepage = "https://github.com/jfahrenkrug/StoryboardLint"
   gem.license = "MIT"
   gem.summary = %Q{A lint tool for UIStoryboards to find wrong classes and wrong storyboard/segue/reuse identifiers}
-  gem.description = %Q{It's a pain to to keep identifier strings in your UIStoryboard and it your source code in sync. This tool helps you to do just that.}
+  gem.description = %Q{It's a pain to to keep identifier strings in your UIStoryboard and in your source code in sync. This tool helps you to do just that.}
   gem.email = "johannes@springenwerk.com"
   gem.authors = ["Johannes Fahrenkrug"]
   

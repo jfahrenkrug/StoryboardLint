@@ -2,12 +2,10 @@
 # Copyright (c) 2014 Johannes Fahrenkrug
 
 require 'nokogiri'
+require 'ostruct'
+require 'optparse'
 
 module StoryboardLint
-  SEGUE_ID_PREFIX = "seg_"
-  STORYBOARD_ID_PREFIX = "sb_"
-  REUSE_ID_PREFIX = "ruid_"
-
   class StoryboardScanner
     def initialize(src_root)
       @src_root = src_root
@@ -66,13 +64,9 @@ module StoryboardLint
     end
   end
 
-  class SourceScanner
-    CLASS_REGEX = /@interface\s+([a-zA-Z_]+\w*)/
-    SEGUE_ID_REGEX = /@"(#{SEGUE_ID_PREFIX}(?:\\"|[^"])+)"/
-    STORYBOARD_ID_REGEX = /@"(#{STORYBOARD_ID_PREFIX}(?:\\"|[^"])+)"/
-    REUSE_ID_REGEX = /@"(#{REUSE_ID_PREFIX}(?:\\"|[^"])+)"/
-    
-    def initialize(src_root)
+  class SourceScanner    
+    def initialize(src_root, matcher)
+      @matcher = matcher
       @src_root = src_root
       @scan_performed = false    
     end
@@ -94,22 +88,22 @@ module StoryboardLint
         source_files.each do |source_file|
           File.readlines(source_file).each_with_index do |line, idx|
             # class names
-            line.scan(CLASS_REGEX).each do |match|
+            line.scan(@matcher.class_regex).each do |match|
               @class_names << {:file => source_file, :line => idx + 1, :class_name => match[0]}
             end
             
             # segue ids
-            line.scan(SEGUE_ID_REGEX).each do |match|
+            line.scan(@matcher.segue_id_regex_source).each do |match|
               @segue_ids << {:file => source_file, :line => idx + 1, :id => match[0]}
             end
             
             # storyboard ids
-            line.scan(STORYBOARD_ID_REGEX).each do |match|
+            line.scan(@matcher.storyboard_id_regex_source).each do |match|
               @storyboard_ids << {:file => source_file, :line => idx + 1, :id => match[0]}
             end
             
             # reuse ids
-            line.scan(REUSE_ID_REGEX).each do |match|
+            line.scan(@matcher.reuse_id_regex_source).each do |match|
               @reuse_ids << {:file => source_file, :line => idx + 1, :id => match[0]}
             end
           end
@@ -140,8 +134,67 @@ module StoryboardLint
     end
   end
   
+  class Matcher
+    DEFAULT_SEGUE_ID_PREFIX = "seg_"
+    DEFAULT_STORYBOARD_ID_PREFIX = "sb_"
+    DEFAULT_REUSE_ID_PREFIX = "ruid_"
+    
+    def initialize(options)
+      options ||= OpenStruct.new
+      
+      @storyboard_id_regex_source = create_source_regex(DEFAULT_STORYBOARD_ID_PREFIX, options.storyboard_prefix, options.storyboard_suffix)
+      @storyboard_id_regex_sb = create_storyboard_regex(DEFAULT_STORYBOARD_ID_PREFIX, options.storyboard_prefix, options.storyboard_suffix)
+      
+      @segue_id_regex_source = create_source_regex(DEFAULT_SEGUE_ID_PREFIX, options.segue_prefix, options.segue_suffix)
+      @segue_id_regex_sb = create_storyboard_regex(DEFAULT_SEGUE_ID_PREFIX, options.segue_prefix, options.segue_suffix)
+      
+      @reuse_id_regex_source = create_source_regex(DEFAULT_REUSE_ID_PREFIX, options.reuse_prefix, options.reuse_suffix)
+      @reuse_id_regex_sb = create_storyboard_regex(DEFAULT_REUSE_ID_PREFIX, options.reuse_prefix, options.reuse_suffix)
+    end
+    
+    def create_source_regex(default_prefix, prefix, suffix)
+      inner_regex_part = %{(?:\\"|[^"])+}
+      if prefix.to_s.empty? and suffix.to_s.empty?
+        return /@"(#{default_prefix}#{inner_regex_part})"/
+      else
+        return /@"(#{prefix}#{inner_regex_part}#{suffix})"/
+      end
+    end
+    
+    def create_storyboard_regex(default_prefix, prefix, suffix)
+      inner_regex_part = %{(?:\\"|[^"])+}
+      if prefix.to_s.empty? and suffix.to_s.empty?
+        sb = /^#{default_prefix}/
+      else        
+        if !prefix.to_s.empty?
+          if !suffix.to_s.empty?
+            sb = /^#{prefix}[\w\s]*#{suffix}$/ 
+          else !prefix.to_s.empty?
+            sb = /^#{prefix}/
+          end
+        else
+          sb = /#{suffix}$/
+        end
+      end
+      
+      sb
+    end
+    
+    def class_regex
+      /@interface\s+([a-zA-Z_]+\w*)/
+    end
+    
+    [:storyboard, :segue, :reuse].each do |name|
+      [:sb, :source].each do |kind|
+        method_name = "#{name}_id_regex_#{kind}"
+        define_method(method_name) { instance_variable_get("@#{method_name}") }
+      end
+    end
+  end
+  
   class Linter
-    def initialize(sb_scanner, source_scanner)
+    def initialize(sb_scanner, source_scanner, matcher)
+      @matcher = matcher
       @sb_scanner = sb_scanner
       @source_scanner = source_scanner
     end
@@ -153,21 +206,13 @@ module StoryboardLint
     end
     
     def check_naming
-      @sb_scanner.segue_ids.each do |seg_id|
-        if seg_id[:id] !~ /$#{SEGUE_ID_PREFIX}/
-          puts "warning: Segue ID '#{seg_id[:id]}' used in #{File.basename(seg_id[:file])} does not start with '#{SEGUE_ID_PREFIX}' prefix."
-        end
-      end
-      
-      @sb_scanner.storyboard_ids.each do |sb_id|
-        if sb_id[:id] !~ /$#{STORYBOARD_ID_PREFIX}/
-          puts "warning: Storyboard ID '#{sb_id[:id]}' used in #{File.basename(sb_id[:file])} does not start with '#{STORYBOARD_ID_PREFIX}' prefix."
-        end
-      end
-      
-      @sb_scanner.reuse_ids.each do |ru_id|
-        if ru_id[:id] !~ /$#{REUSE_ID_PREFIX}/
-          puts "warning: Reuse ID '#{ru_id[:id]}' used in #{File.basename(ru_id[:file])} does not start with '#{REUSE_ID_PREFIX}' prefix."
+      [{:items => @sb_scanner.segue_ids, :regex => @matcher.segue_id_regex_sb, :name => 'Segue ID'},
+       {:items => @sb_scanner.storyboard_ids, :regex => @matcher.storyboard_id_regex_sb, :name => 'Storyboard ID'},
+       {:items => @sb_scanner.reuse_ids, :regex => @matcher.reuse_id_regex_sb, :name => 'Reuse ID'}].each do |data|
+        data[:items].each do |item|
+          if item[:id] !~ data[:regex]
+            puts "warning: #{data[:name]} '#{item[:id]}' used in #{File.basename(item[:file])} does not match '#{data[:regex]}."
+          end
         end
       end
     end
@@ -181,39 +226,75 @@ module StoryboardLint
     end
     
     def check_ids
-      @source_scanner.segue_ids.each do |seg_id|
-        if !@sb_scanner.segue_ids.map {|sb_seg_id| sb_seg_id[:id]}.include?(seg_id[:id])
-          puts "#{seg_id[:file]}:#{seg_id[:line]}: warning: Segue ID '#{seg_id[:id]}' could not be found in any Storyboard."    
-        end
-      end
-      
-      @source_scanner.storyboard_ids.each do |sb_id|
-        if !@sb_scanner.storyboard_ids.map {|sb_sb_id| sb_sb_id[:id]}.include?(sb_id[:id])
-          puts "#{sb_id[:file]}:#{sb_id[:line]}: warning: Storyboard ID '#{sb_id[:id]}' could not be found in any Storyboard."    
-        end
-      end
-      
-      @source_scanner.reuse_ids.each do |ru_id|
-        if !@sb_scanner.reuse_ids.map {|sb_ru_id| sb_ru_id[:id]}.include?(ru_id[:id])
-          puts "#{ru_id[:file]}:#{ru_id[:line]}: warning: Reuse ID '#{ru_id[:id]}' could not be found in any Storyboard."    
+      [{:method_name => :segue_ids, :name => 'Segue ID'},
+       {:method_name => :storyboard_ids, :name => 'Storyboard ID'},
+       {:method_name => :reuse_ids, :name => 'Reuse ID'}].each do |data|
+        @source_scanner.send(data[:method_name]).each do |source_item|
+          if !@sb_scanner.send(data[:method_name]).map {|sb_item| sb_item[:id]}.include?(source_item[:id])
+            puts "#{source_item[:file]}:#{source_item[:line]}: warning: #{data[:name]} '#{source_item[:id]}' could not be found in any Storyboard."    
+          end
         end
       end
     end
     
     def self.run!(*args)
-      puts "StoryboardLint"
-      puts "by Johannes Fahrenkrug, @jfahrenkrug, springenwerk.com"
-      puts
+      options = OpenStruct.new
+      
+      opt_parser = OptionParser.new do |opts|
+        opts.banner = "Usage: storyboardlint <target directory> [options]"
+        opts.separator  ""
+        opts.separator  "Options"
 
-      if args.size < 1
-        puts "Usage: storyboardlint <target directory>"
-        exit
+        opts.on("--storyboard-prefix [PREFIX]", "Storyboard IDs have to begin with PREFIX.") do |prefix|
+          options.storyboard_prefix = prefix
+        end
+        
+        opts.on("--storyboard-suffix [SUFFIX]", "Storyboard IDs have to end with SUFFIX") do |suffix|
+          options.storyboard_suffix = suffix
+        end
+        
+        opts.on("--segue-prefix [PREFIX]", "Segue IDs have to begin with PREFIX") do |prefix|
+          options.segue_prefix = prefix
+        end
+        
+        opts.on("--segue-suffix [SUFFIX]", "Segue IDs have to end with SUFFIX") do |suffix|
+          options.segue_suffix = suffix
+        end
+        
+        opts.on("--reuse-prefix [PREFIX]", "Reuse IDs have to begin with PREFIX") do |prefix|
+          options.reuse_prefix = prefix
+        end
+        
+        opts.on("--reuse-suffix [SUFFIX]", "Reuse IDs have to end with SUFFIX") do |suffix|
+          options.reuse_suffix = suffix
+        end
+        
+        # No argument, shows at tail.  This will print an options summary.
+        # Try it and see!
+        opts.on_tail("-h", "--help", "Show this message") do
+          puts opts
+          exit
+        end
+
+        # Another typical switch to print the version.
+        opts.on_tail("--version", "Show version") do
+          puts "StoryboardLint v0.1.1"
+          exit
+        end
       end
+      
+      if ARGV.length < 1
+        puts opt_parser
+        exit 0
+      end
+      
+      opt_parser.parse(args)
 
+      matcher = StoryboardLint::Matcher.new(options)
       sb_scanner = StoryboardLint::StoryboardScanner.new(ARGV[0])
-      source_scanner = StoryboardLint::SourceScanner.new(ARGV[0])
+      source_scanner = StoryboardLint::SourceScanner.new(ARGV[0], matcher)
 
-      linter = StoryboardLint::Linter.new(sb_scanner, source_scanner)
+      linter = StoryboardLint::Linter.new(sb_scanner, source_scanner, matcher)
       linter.lint
       
       return 0
