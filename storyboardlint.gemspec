@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "storyboardlint"
-  s.version = "0.1.2"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Johannes Fahrenkrug"]
-  s.date = "2014-02-20"
+  s.date = "2014-02-25"
   s.description = "It's a pain to to keep identifier strings in your UIStoryboard and in your source code in sync. This tool helps you to do just that."
   s.email = "johannes@springenwerk.com"
   s.executables = ["storyboardlint"]
@@ -18,6 +18,9 @@ Gem::Specification.new do |s|
     "README.md"
   ]
   s.files = [
+    ".rspec",
+    ".travis.yml",
+    "CHANGELOG.md",
     "Gemfile",
     "Gemfile.lock",
     "LICENSE",
@@ -26,6 +29,29 @@ Gem::Specification.new do |s|
     "VERSION",
     "bin/storyboardlint",
     "lib/storyboardlint.rb",
+    "spec/fixtures/StoryboardLintTest/StoryboardLintTest.xcodeproj/project.pbxproj",
+    "spec/fixtures/StoryboardLintTest/StoryboardLintTest.xcodeproj/project.xcworkspace/contents.xcworkspacedata",
+    "spec/fixtures/StoryboardLintTest/StoryboardLintTest.xcodeproj/project.xcworkspace/xcshareddata/StoryboardLintTest.xccheckout",
+    "spec/fixtures/StoryboardLintTest/StoryboardLintTest/Base.lproj/Main_iPad.storyboard",
+    "spec/fixtures/StoryboardLintTest/StoryboardLintTest/Base.lproj/Main_iPhone.storyboard",
+    "spec/fixtures/StoryboardLintTest/StoryboardLintTest/Images.xcassets/AppIcon.appiconset/Contents.json",
+    "spec/fixtures/StoryboardLintTest/StoryboardLintTest/Images.xcassets/LaunchImage.launchimage/Contents.json",
+    "spec/fixtures/StoryboardLintTest/StoryboardLintTest/SPWKAppDelegate.h",
+    "spec/fixtures/StoryboardLintTest/StoryboardLintTest/SPWKAppDelegate.m",
+    "spec/fixtures/StoryboardLintTest/StoryboardLintTest/SPWKDetailViewController.h",
+    "spec/fixtures/StoryboardLintTest/StoryboardLintTest/SPWKDetailViewController.m",
+    "spec/fixtures/StoryboardLintTest/StoryboardLintTest/SPWKMasterViewController.h",
+    "spec/fixtures/StoryboardLintTest/StoryboardLintTest/SPWKMasterViewController.m",
+    "spec/fixtures/StoryboardLintTest/StoryboardLintTest/StoryboardLintTest-Info.plist",
+    "spec/fixtures/StoryboardLintTest/StoryboardLintTest/StoryboardLintTest-Prefix.pch",
+    "spec/fixtures/StoryboardLintTest/StoryboardLintTest/TestView.xib",
+    "spec/fixtures/StoryboardLintTest/StoryboardLintTest/en.lproj/InfoPlist.strings",
+    "spec/fixtures/StoryboardLintTest/StoryboardLintTest/main.m",
+    "spec/linter_spec.rb",
+    "spec/matcher_spec.rb",
+    "spec/source_scanner_spec.rb",
+    "spec/spec_helper.rb",
+    "spec/storyboard_scanner_spec.rb",
     "storyboardlint.gemspec"
   ]
   s.homepage = "https://github.com/jfahrenkrug/StoryboardLint"
@@ -41,15 +67,18 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<nokogiri>, ["~> 1.5.0"])
       s.add_development_dependency(%q<bundler>, ["~> 1.3.5"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.8.0"])
+      s.add_development_dependency(%q<rspec>, ["~> 2.14.0"])
     else
       s.add_dependency(%q<nokogiri>, ["~> 1.5.0"])
       s.add_dependency(%q<bundler>, ["~> 1.3.5"])
       s.add_dependency(%q<jeweler>, ["~> 1.8.0"])
+      s.add_dependency(%q<rspec>, ["~> 2.14.0"])
     end
   else
     s.add_dependency(%q<nokogiri>, ["~> 1.5.0"])
     s.add_dependency(%q<bundler>, ["~> 1.3.5"])
     s.add_dependency(%q<jeweler>, ["~> 1.8.0"])
+    s.add_dependency(%q<rspec>, ["~> 2.14.0"])
   end
 end
 
