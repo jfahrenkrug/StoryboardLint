@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>620D71BB-67C3-4D84-BCC5-A0B4D895BD29</string>
+	<key>IDESourceControlProjectName</key>
+	<string>StoryboardLintTest</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>3AFA09A7-EA5D-4B2B-9C50-9B045C80B31B</key>
+		<string>ssh://github.com/jfahrenkrug/StoryboardLint.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>spec/fixtures/StoryboardLintTest/StoryboardLintTest.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>3AFA09A7-EA5D-4B2B-9C50-9B045C80B31B</key>
+		<string>../../../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://github.com/jfahrenkrug/StoryboardLint.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>3AFA09A7-EA5D-4B2B-9C50-9B045C80B31B</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>3AFA09A7-EA5D-4B2B-9C50-9B045C80B31B</string>
+			<key>IDESourceControlWCCName</key>
+			<string>StoryboardLint</string>
+		</dict>
+	</array>
+</dict>
+</plist>

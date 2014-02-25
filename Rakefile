@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'bundler'
+require "rspec/core/rake_task"
 begin
   Bundler.setup(:default, :development)
 rescue Bundler::BundlerError => e
@@ -23,3 +24,7 @@ Jeweler::Tasks.new do |gem|
   # dependencies defined in Gemfile
 end
 Jeweler::RubygemsDotOrgTasks.new
+
+RSpec::Core::RakeTask.new
+
+task :test => :spec

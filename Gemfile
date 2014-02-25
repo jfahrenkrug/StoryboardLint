@@ -8,4 +8,6 @@ gem "nokogiri", "~> 1.5.0"
 group :development do
   gem "bundler", "~> 1.3.5"
   gem "jeweler", "~> 1.8.0"
+  gem "rspec", "~> 2.14.0"
+  
 end

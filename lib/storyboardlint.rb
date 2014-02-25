@@ -9,6 +9,10 @@ require 'optparse'
 module StoryboardLint
   class StoryboardScanner
     def initialize(src_root)
+      if !File.directory?(src_root)
+        raise ArgumentError, "The directory '#{src_root}' does not exist."
+      end
+      
       @src_root = src_root
       @scan_performed = false    
     end
@@ -19,6 +23,28 @@ module StoryboardLint
       # find all storyboard files...
       @sb_files = Dir.glob(File.join(@src_root, "**/*.storyboard"))
     end
+    
+    def segue_ids
+      scan_files
+      @segue_ids
+    end
+    
+    def storyboard_ids
+      scan_files
+      @storyboard_ids
+    end
+    
+    def reuse_ids
+      scan_files
+      @reuse_ids
+    end
+    
+    def custom_class_names
+      scan_files
+      @custom_class_names
+    end
+    
+    private
     
     def scan_files
       if !@scan_performed
@@ -43,6 +69,29 @@ module StoryboardLint
         @scan_performed = true
       end
     end
+  end
+
+  class SourceScanner    
+    def initialize(src_root, matcher)
+      if !File.directory?(src_root)
+        raise ArgumentError, "The directory '#{src_root}' does not exist."
+      end
+      
+      if !matcher
+        raise ArgumentError, "The matcher cannot be nil."
+      end
+      
+      @matcher = matcher
+      @src_root = src_root
+      @scan_performed = false    
+    end
+    
+    def source_files
+      return @source_files if @source_files
+  
+      # find all *.h, *.c, *.m and *.mm files
+      @source_files = Dir.glob(File.join(@src_root, "**/*.{h,c,m,mm}"))
+    end
     
     def segue_ids
       scan_files
@@ -59,25 +108,12 @@ module StoryboardLint
       @reuse_ids
     end
     
-    def custom_class_names
+    def class_names
       scan_files
-      @custom_class_names
-    end
-  end
-
-  class SourceScanner    
-    def initialize(src_root, matcher)
-      @matcher = matcher
-      @src_root = src_root
-      @scan_performed = false    
+      @class_names
     end
     
-    def source_files
-      return @source_files if @source_files
-  
-      # find all *.h, *.c, *.m and *.mm files
-      @source_files = Dir.glob(File.join(@src_root, "**/*.{h,c,m,mm}"))
-    end
+    private
     
     def scan_files
       if !@scan_performed
@@ -113,26 +149,6 @@ module StoryboardLint
         @scan_performed = true
       end
     end
-    
-    def class_names
-      scan_files
-      @class_names
-    end
-    
-    def segue_ids
-      scan_files
-      @segue_ids
-    end
-    
-    def storyboard_ids
-      scan_files
-      @storyboard_ids
-    end
-    
-    def reuse_ids
-      scan_files
-      @reuse_ids
-    end
   end
   
   class Matcher
@@ -152,6 +168,19 @@ module StoryboardLint
       @reuse_id_regex_source = create_source_regex(DEFAULT_REUSE_ID_PREFIX, options.reuse_prefix, options.reuse_suffix)
       @reuse_id_regex_sb = create_storyboard_regex(DEFAULT_REUSE_ID_PREFIX, options.reuse_prefix, options.reuse_suffix)
     end
+        
+    def class_regex
+      /@interface\s+([a-zA-Z_]+\w*)/
+    end
+    
+    [:storyboard, :segue, :reuse].each do |name|
+      [:sb, :source].each do |kind|
+        method_name = "#{name}_id_regex_#{kind}"
+        define_method(method_name) { instance_variable_get("@#{method_name}") }
+      end
+    end
+    
+    private
     
     def create_source_regex(default_prefix, prefix, suffix)
       inner_regex_part = %{(?:\\"|[^"])+}
@@ -180,21 +209,22 @@ module StoryboardLint
       
       sb
     end
-    
-    def class_regex
-      /@interface\s+([a-zA-Z_]+\w*)/
-    end
-    
-    [:storyboard, :segue, :reuse].each do |name|
-      [:sb, :source].each do |kind|
-        method_name = "#{name}_id_regex_#{kind}"
-        define_method(method_name) { instance_variable_get("@#{method_name}") }
-      end
-    end
   end
   
   class Linter
     def initialize(sb_scanner, source_scanner, matcher)
+      if !sb_scanner
+        raise ArgumentError, "The sb_scanner cannot be nil."
+      end
+      
+      if !source_scanner
+        raise ArgumentError, "The source_scanner cannot be nil."
+      end
+      
+      if !matcher
+        raise ArgumentError, "The matcher cannot be nil."
+      end
+      
       @matcher = matcher
       @sb_scanner = sb_scanner
       @source_scanner = source_scanner
@@ -279,7 +309,7 @@ module StoryboardLint
 
         # Another typical switch to print the version.
         opts.on_tail("--version", "Show version") do
-          puts "StoryboardLint v0.1.2"
+          puts "StoryboardLint v0.2.0"
           exit
         end
       end
