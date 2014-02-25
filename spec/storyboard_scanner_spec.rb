@@ -14,8 +14,10 @@ describe StoryboardLint::StoryboardScanner do
   it "should find the storyboard files in the directory" do
     sb_files = @sbs.storyboard_files
     sb_files.size.should == 2
-    File.basename(sb_files[0]).should == "Main_iPad.storyboard"
-    File.basename(sb_files[1]).should == "Main_iPhone.storyboard"
+    
+    ["Main_iPad.storyboard", "Main_iPhone.storyboard"].each do |file|
+      sb_files.map {|path| File.basename(path)}.should include(file)
+    end
   end
   
   it "should return the segue IDs" do
@@ -27,16 +29,19 @@ describe StoryboardLint::StoryboardScanner do
   it "should return the storyboard IDs" do
     ids = @sbs.storyboard_ids
     ids.size.should == 3
-    ids[0][:id].should == 'sb_navigationControllerStoryboard'
-    ids[1][:id].should == 'sb_masterControllerStoryboard'
-    ids[2][:id].should == 'sb_detailControllerStoryboard'
+    
+    ['sb_navigationControllerStoryboard', 'sb_masterControllerStoryboard', 'sb_detailControllerStoryboard'].each do |id|
+      ids.map {|i| i[:id]}.should include(id)
+    end
   end
   
   it "should return the reuse IDs" do
     ids = @sbs.reuse_ids
     ids.size.should == 2
-    ids[0][:id].should == "Cell"
-    ids[1][:id].should == "ruid_TableCell"
+    
+    ['Cell', 'ruid_TableCell'].each do |id|
+      ids.map {|i| i[:id]}.should include(id)
+    end
   end
   
   it "should return the custom class names" do
