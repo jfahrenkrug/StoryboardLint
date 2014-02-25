@@ -1,5 +1,6 @@
 StoryboardLint
 ==============
+[![Build Status](https://travis-ci.org/jfahrenkrug/StoryboardLint.png?branch=master)](https://travis-ci.org/jfahrenkrug/StoryboardLint)
 
 A lint tool for UIStoryboard to find wrong classes and wrong storyboard/segue/reuse identifiers.
 
