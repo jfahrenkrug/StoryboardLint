@@ -24,6 +24,13 @@ module StoryboardLint
       @sb_files = Dir.glob(File.join(@src_root, "**/*.storyboard"))
     end
     
+    def xib_files
+      return @xib_files if @xib_files
+  
+      # find all XIB files...
+      @xib_files = Dir.glob(File.join(@src_root, "**/*.xib"))
+    end
+    
     def segue_ids
       scan_files
       @segue_ids
@@ -64,6 +71,13 @@ module StoryboardLint
           @storyboard_ids += doc.xpath("//@storyboardIdentifier").to_a.map {|match| {:file => sb_file, :id => match.to_s}}
           @reuse_ids += doc.xpath("//@reuseIdentifier").to_a.map {|match| {:file => sb_file, :id => match.to_s}}
           @custom_class_names += doc.xpath("//@customClass").to_a.map {|match| {:file => sb_file, :class_name => match.to_s}}
+        end
+        
+        xib_files.each do |xib_file|
+          xib_source = File.open(xib_file)
+          doc = Nokogiri::XML(xib_source)
+
+          @reuse_ids += doc.xpath("//@reuseIdentifier").to_a.map {|match| {:file => xib_file, :id => match.to_s}}
         end
         
         @scan_performed = true
@@ -257,12 +271,12 @@ module StoryboardLint
     end
     
     def check_ids
-      [{:method_name => :segue_ids, :name => 'Segue ID'},
-       {:method_name => :storyboard_ids, :name => 'Storyboard ID'},
-       {:method_name => :reuse_ids, :name => 'Reuse ID'}].each do |data|
+      [{:method_name => :segue_ids, :name => 'Segue ID', :target => 'Storyboard'},
+       {:method_name => :storyboard_ids, :name => 'Storyboard ID', :target => 'Storyboard'},
+       {:method_name => :reuse_ids, :name => 'Reuse ID', :target => 'Storyboard or XIB'}].each do |data|
         @source_scanner.send(data[:method_name]).each do |source_item|
           if !@sb_scanner.send(data[:method_name]).map {|sb_item| sb_item[:id]}.include?(source_item[:id])
-            puts "#{source_item[:file]}:#{source_item[:line]}: warning: #{data[:name]} '#{source_item[:id]}' could not be found in any Storyboard."    
+            puts "#{source_item[:file]}:#{source_item[:line]}: warning: #{data[:name]} '#{source_item[:id]}' could not be found in any #{data[:target]}."    
           end
         end
       end

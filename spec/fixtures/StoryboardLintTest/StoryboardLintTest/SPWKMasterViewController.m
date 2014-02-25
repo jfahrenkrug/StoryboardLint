@@ -120,6 +120,7 @@
 {
     NSString *test3 = @"sb_masterControllerStoryboard";
     NSString *test4 = @"sb_detailControllerStoryboard";
+    NSString *test5 = @"ruid_cellFromXIB";
     if ([[segue identifier] isEqualToString:@"showDetail"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
         NSDate *object = _objects[indexPath.row];

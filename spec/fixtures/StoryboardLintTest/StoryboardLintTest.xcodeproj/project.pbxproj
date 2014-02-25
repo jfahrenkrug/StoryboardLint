@@ -21,6 +21,7 @@
 		8F10072F18BC38B50096916D /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F10072E18BC38B50096916D /* XCTest.framework */; };
 		8F10073018BC38B50096916D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F10070918BC38B50096916D /* Foundation.framework */; };
 		8F10073118BC38B50096916D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8F10070D18BC38B50096916D /* UIKit.framework */; };
+		8F10074518BC57E10096916D /* TestView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8F10074418BC57E10096916D /* TestView.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,7 @@
 		8F10072718BC38B50096916D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		8F10072D18BC38B50096916D /* StoryboardLintTestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StoryboardLintTestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F10072E18BC38B50096916D /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		8F10074418BC57E10096916D /* TestView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TestView.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +123,7 @@
 				8F10072518BC38B50096916D /* SPWKDetailViewController.m */,
 				8F10072718BC38B50096916D /* Images.xcassets */,
 				8F10071018BC38B50096916D /* Supporting Files */,
+				8F10074418BC57E10096916D /* TestView.xib */,
 			);
 			path = StoryboardLintTest;
 			sourceTree = "<group>";
@@ -216,6 +219,7 @@
 				8F10072018BC38B50096916D /* Main_iPad.storyboard in Resources */,
 				8F10072818BC38B50096916D /* Images.xcassets in Resources */,
 				8F10071D18BC38B50096916D /* Main_iPhone.storyboard in Resources */,
+				8F10074518BC57E10096916D /* TestView.xib in Resources */,
 				8F10071418BC38B50096916D /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

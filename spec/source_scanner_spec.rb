@@ -46,8 +46,8 @@ describe StoryboardLint::SourceScanner do
     
     it "should find all reuse IDs that match the default naming convention" do
       ids = @src.reuse_ids
-      ids.size.should == 2
-      ['ruid_somethingNonExistent', 'ruid_TableCell'].each do |id|
+      ids.size.should == 3
+      ['ruid_somethingNonExistent', 'ruid_TableCell', 'ruid_cellFromXIB'].each do |id|
         ids.map {|i| i[:id]}.should include(id)
       end
     end
@@ -127,9 +127,9 @@ describe StoryboardLint::SourceScanner do
     
     it "should find all reuse IDs that match the given naming convention" do
       ids = @src.reuse_ids
-      ids.size.should == 3
+      ids.size.should == 4
       
-      ["ruid_somethingNonExistent", "ruid_TableCell", "ruidIDoNotExist"].each do |id|
+      ["ruid_somethingNonExistent", "ruid_TableCell", "ruidIDoNotExist", "ruid_cellFromXIB"].each do |id|
         ids.map {|i| i[:id]}.should include(id)
       end
     end

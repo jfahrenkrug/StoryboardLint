@@ -37,9 +37,9 @@ describe StoryboardLint::StoryboardScanner do
   
   it "should return the reuse IDs" do
     ids = @sbs.reuse_ids
-    ids.size.should == 2
+    ids.size.should == 3
     
-    ['Cell', 'ruid_TableCell'].each do |id|
+    ['Cell', 'ruid_TableCell', 'ruid_cellFromXIB'].each do |id|
       ids.map {|i| i[:id]}.should include(id)
     end
   end
