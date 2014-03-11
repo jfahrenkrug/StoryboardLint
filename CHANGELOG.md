@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.1
+
+- StoryboardList does not choke up on directories that are named like files anymore
+- Added a --additional-sources CLI parameter, see https://github.com/jfahrenkrug/StoryboardLint/issues/3
+
 ## 0.2.0
 
 - XIB files are now also scanned for reuse identifiers

@@ -86,7 +86,7 @@ module StoryboardLint
   end
 
   class SourceScanner    
-    def initialize(src_root, matcher)
+    def initialize(src_root, matcher, additional_sources = nil)
       if !File.directory?(src_root)
         raise ArgumentError, "The directory '#{src_root}' does not exist."
       end
@@ -95,6 +95,7 @@ module StoryboardLint
         raise ArgumentError, "The matcher cannot be nil."
       end
       
+      @additional_sources = additional_sources
       @matcher = matcher
       @src_root = src_root
       @scan_performed = false    
@@ -104,7 +105,27 @@ module StoryboardLint
       return @source_files if @source_files
   
       # find all *.h, *.c, *.m and *.mm files
-      @source_files = Dir.glob(File.join(@src_root, "**/*.{h,c,m,mm}"))
+      match_string = "**/*.{h,c,m,mm}"
+      @source_files = Dir.glob(File.join(@src_root, match_string))
+      
+      if @additional_sources && @additional_sources.size > 0
+        @additional_sources.each do |source_path|
+          absolute_path = ''
+          if source_path.start_with?("/")
+            #absolute path
+            absolute_path = source_path
+          else
+            #relative to src_root
+            absolute_path = File.join(@src_root, source_path)
+          end
+          
+          if File.directory?(absolute_path)
+            @source_files += Dir.glob(File.join(absolute_path, match_string))
+          else
+            puts "warning: additional source directory '#{absolute_path}' does not exist!"
+          end
+        end
+      end
       
       if @source_files and @source_files.size > 0
         @source_files.select! {|sf| File.file?(sf)}
@@ -320,6 +341,10 @@ module StoryboardLint
           options.reuse_suffix = suffix
         end
         
+        opts.on( '--additional-sources /absolute/path,../relative/to/target_directory', Array, "List of additional directories to scan for source files") do |source_paths|
+          options.additional_sources = source_paths
+        end
+        
         # No argument, shows at tail.  This will print an options summary.
         # Try it and see!
         opts.on_tail("-h", "--help", "Show this message") do
@@ -343,7 +368,7 @@ module StoryboardLint
 
       matcher = StoryboardLint::Matcher.new(options)
       sb_scanner = StoryboardLint::StoryboardScanner.new(ARGV[0])
-      source_scanner = StoryboardLint::SourceScanner.new(ARGV[0], matcher)
+      source_scanner = StoryboardLint::SourceScanner.new(ARGV[0], matcher, options.additional_sources)
 
       linter = StoryboardLint::Linter.new(sb_scanner, source_scanner, matcher)
       linter.lint

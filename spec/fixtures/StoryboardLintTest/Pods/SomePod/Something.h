@@ -1,0 +1,2 @@
+@interface ClassFromCocoaPod : NSObject
+@end

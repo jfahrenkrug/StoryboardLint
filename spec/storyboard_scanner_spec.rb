@@ -46,11 +46,12 @@ describe StoryboardLint::StoryboardScanner do
   
   it "should return the custom class names" do
     names = @sbs.custom_class_names
-    names.size.should == 5
+    names.size.should == 6
     name_strings = names.map {|item| item[:class_name]}
     name_strings.should include('SPWKMasterViewController')
     name_strings.should include('SPWKDetailViewController')
     name_strings.should include('NonexistentViewController')
+    name_strings.should include('ClassFromCocoaPod')
   end
   
 end

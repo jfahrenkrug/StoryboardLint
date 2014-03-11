@@ -14,14 +14,14 @@ describe StoryboardLint::SourceScanner do
   
   describe "Default Options" do
     before :all do
-      @src = StoryboardLint::SourceScanner.new(File.join(File.dirname(__FILE__), "fixtures", "StoryboardLintTest"), StoryboardLint::Matcher.new(nil))
+      @src = StoryboardLint::SourceScanner.new(File.join(File.dirname(__FILE__), "fixtures", "StoryboardLintTest", "StoryboardLintTest"), StoryboardLint::Matcher.new(nil), ["../Pods"])
     end
     
     it "should find all source files" do
       file_names = @src.source_files.map {|full_path| File.basename(full_path)}
-      file_names.size.should == 8
+      file_names.size.should == 9
       
-       ["SPWKAppDelegate.h", "SPWKDetailViewController.h", "SPWKMasterViewController.h", "main.m", "SPWKAppDelegate.m", "SPWKDetailViewController.m", "SPWKMasterViewController.m", "SomeFile.m"].each do |fn|
+       ["SPWKAppDelegate.h", "SPWKDetailViewController.h", "SPWKMasterViewController.h", "main.m", "SPWKAppDelegate.m", "SPWKDetailViewController.m", "SPWKMasterViewController.m", "SomeFile.m", "Something.h"].each do |fn|
           file_names.should include(fn)
        end
     end
@@ -54,9 +54,9 @@ describe StoryboardLint::SourceScanner do
     
     it "should find all class names in the project" do
       names = @src.class_names.map {|n| n[:class_name]}
-      names.size.should == 5
+      names.size.should == 6
       
-      ["SPWKAppDelegate", "SPWKDetailViewController", "SPWKMasterViewController", "SPWKDetailViewController", "SPWKMasterViewController"].each do |name|
+      ["SPWKAppDelegate", "SPWKDetailViewController", "SPWKMasterViewController", "SPWKDetailViewController", "SPWKMasterViewController", "ClassFromCocoaPod"].each do |name|
         names.should include(name)
       end
     end
