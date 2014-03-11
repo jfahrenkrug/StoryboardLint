@@ -105,6 +105,12 @@ module StoryboardLint
   
       # find all *.h, *.c, *.m and *.mm files
       @source_files = Dir.glob(File.join(@src_root, "**/*.{h,c,m,mm}"))
+      
+      if @source_files and @source_files.size > 0
+        @source_files.select! {|sf| File.file?(sf)}
+      end
+      
+      @source_files
     end
     
     def segue_ids
@@ -323,7 +329,7 @@ module StoryboardLint
 
         # Another typical switch to print the version.
         opts.on_tail("--version", "Show version") do
-          puts "StoryboardLint v0.2.0"
+          puts "StoryboardLint v0.2.1"
           exit
         end
       end

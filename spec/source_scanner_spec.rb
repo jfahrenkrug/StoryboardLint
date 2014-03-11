@@ -19,9 +19,9 @@ describe StoryboardLint::SourceScanner do
     
     it "should find all source files" do
       file_names = @src.source_files.map {|full_path| File.basename(full_path)}
-      file_names.size.should == 7
+      file_names.size.should == 8
       
-       ["SPWKAppDelegate.h", "SPWKDetailViewController.h", "SPWKMasterViewController.h", "main.m", "SPWKAppDelegate.m", "SPWKDetailViewController.m", "SPWKMasterViewController.m"].each do |fn|
+       ["SPWKAppDelegate.h", "SPWKDetailViewController.h", "SPWKMasterViewController.h", "main.m", "SPWKAppDelegate.m", "SPWKDetailViewController.m", "SPWKMasterViewController.m", "SomeFile.m"].each do |fn|
           file_names.should include(fn)
        end
     end
