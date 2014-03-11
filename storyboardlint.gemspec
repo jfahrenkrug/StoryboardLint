@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "storyboardlint"
-  s.version = "0.2.0"
+  s.version = "0.2.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Johannes Fahrenkrug"]
-  s.date = "2014-02-25"
+  s.date = "2014-03-11"
   s.description = "It's a pain to to keep identifier strings in your UIStoryboard and in your source code in sync. This tool helps you to do just that."
   s.email = "johannes@springenwerk.com"
   s.executables = ["storyboardlint"]
@@ -29,6 +29,7 @@ Gem::Specification.new do |s|
     "VERSION",
     "bin/storyboardlint",
     "lib/storyboardlint.rb",
+    "spec/fixtures/StoryboardLintTest/Pods/SomePod/Something.h",
     "spec/fixtures/StoryboardLintTest/StoryboardLintTest.xcodeproj/project.pbxproj",
     "spec/fixtures/StoryboardLintTest/StoryboardLintTest.xcodeproj/project.xcworkspace/contents.xcworkspacedata",
     "spec/fixtures/StoryboardLintTest/StoryboardLintTest.xcodeproj/project.xcworkspace/xcshareddata/StoryboardLintTest.xccheckout",
@@ -42,6 +43,7 @@ Gem::Specification.new do |s|
     "spec/fixtures/StoryboardLintTest/StoryboardLintTest/SPWKDetailViewController.m",
     "spec/fixtures/StoryboardLintTest/StoryboardLintTest/SPWKMasterViewController.h",
     "spec/fixtures/StoryboardLintTest/StoryboardLintTest/SPWKMasterViewController.m",
+    "spec/fixtures/StoryboardLintTest/StoryboardLintTest/SomeFolder.m/SomeFile.m",
     "spec/fixtures/StoryboardLintTest/StoryboardLintTest/StoryboardLintTest-Info.plist",
     "spec/fixtures/StoryboardLintTest/StoryboardLintTest/StoryboardLintTest-Prefix.pch",
     "spec/fixtures/StoryboardLintTest/StoryboardLintTest/TestView.xib",
