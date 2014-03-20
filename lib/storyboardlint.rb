@@ -224,7 +224,7 @@ module StoryboardLint
     private
     
     def create_source_regex(default_prefix, prefix, suffix)
-      inner_regex_part = %{(?:\\"|[^"])+}
+      inner_regex_part = %{(?:\\\\"|[^"])+}
       if prefix.to_s.empty? and suffix.to_s.empty?
         return /@"(#{default_prefix}#{inner_regex_part})"/
       else
@@ -233,7 +233,7 @@ module StoryboardLint
     end
     
     def create_storyboard_regex(default_prefix, prefix, suffix)
-      inner_regex_part = %{(?:\\"|[^"])+}
+      inner_regex_part = %{(?:\\\\"|[^"])+}
       if prefix.to_s.empty? and suffix.to_s.empty?
         sb = /^#{default_prefix}/
       else        
@@ -354,7 +354,7 @@ module StoryboardLint
 
         # Another typical switch to print the version.
         opts.on_tail("--version", "Show version") do
-          puts "StoryboardLint v0.2.1"
+          puts "StoryboardLint v0.2.2"
           exit
         end
       end

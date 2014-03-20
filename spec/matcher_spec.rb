@@ -151,6 +151,17 @@ describe StoryboardLint::Matcher do
       "cellpretest".should_not match(r)
       '@"cellpretest"'.should match(r)
     end
+    
+    it "should only capture the actual ID" do
+      options = OpenStruct.new
+      options.reuse_suffix = "Cell"
+      m = StoryboardLint::Matcher.new(options)
+      r = m.reuse_id_regex_source
+      test_string = '@"cellName" : @"bronzeTableCell"'
+      test_string.should match(r)
+      test_string =~ r
+      $1.should == 'bronzeTableCell'
+    end
   end
   
 end
