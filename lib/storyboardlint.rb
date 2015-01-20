@@ -166,6 +166,7 @@ module StoryboardLint
         source_files.each do |source_file|
           File.readlines(source_file, :encoding => 'UTF-8').each_with_index do |line, idx|
             # class names
+            line.encode!('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
             line.scan(@matcher.class_regex).each do |match|
               @class_names << {:file => source_file, :line => idx + 1, :class_name => match[0]}
             end
